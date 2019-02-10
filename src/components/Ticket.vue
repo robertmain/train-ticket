@@ -4,7 +4,7 @@
       <div class="header">Hogwarts Express</div>
       <div class="info passenger">
         <div class="info__item">Passenger</div>
-        <div class="info__detail">Hermione J. Granger</div>
+        <div class="info__detail">{{passenger}}</div>
       </div>
       <div class="info platform">
         <span>Depart</span>
@@ -20,27 +20,27 @@
       </div>
       <div class="info departure">
         <div class="info__item">Depart</div>
-        <div class="info__detail">King's Cross</div>
+        <div class="info__detail">{{depart | truncate(16)}}</div>
       </div>
       <div class="info arrival">
         <div class="info__item">Arrive</div>
-        <div class="info__detail">Hogsmeade</div>
+        <div class="info__detail">{{arrive  | truncate(16)}}</div>
       </div>
       <div class="info date">
         <div class="info__item">Date</div>
-        <div class="info__detail">1 Sep 2018</div>
+        <div class="info__detail">{{date.toUpperCase()}}</div>
       </div>
       <div class="info time">
         <div class="info__item">Time</div>
-        <div class="info__detail">11:00AM</div>
+        <div class="info__detail">{{time}}</div>
       </div>
       <div class="info carriage">
-        <div class="info__item">car</div>
-        <div class="info__detail">4</div>
+        <div class="info__item">CAR</div>
+        <div class="info__detail">{{car}}</div>
       </div>
       <div class="info seat">
-        <div class="info__item">Seat</div>
-        <div class="info__detail">6B</div>
+        <div class="info__item">SEAT</div>
+        <div class="info__detail">{{seat}}</div>
       </div>
       <div class="fineprint">
         <p>Boarding begins 30 minutes before departure. Snacks available for purchase from The Honeydukes Express.</p>
@@ -61,38 +61,83 @@
       </div>
       <div class="barcode">
         <div class="barcode__scan"></div>
-        <div class="barcode__id">001256733</div>
+        <div class="barcode__id">{{barCodeId}}</div>
       </div>
     </div>
     <div class="ticket__side">
-      <div class="logo">Hogwarts Express</div>
+      <div class="logo"><p>Hogwarts Express</p></div>
       <div class="info side-arrive">
         <div class="info__item">Arrive</div>
-        <div class="info__detail">Hogsmeade</div>
+        <div class="info__detail">{{arrive  | truncate(13)}}</div>
       </div>
       <div class="info side-depart">
         <div class="info__item">Depart</div>
-        <div class="info__detail">King's Cross</div>
+        <div class="info__detail">{{depart  | truncate(16)}}</div>
       </div>
       <div class="info side-date">
         <div class="info__item">Date</div>
-        <div class="info__detail">1 Sep 2018</div>
+        <div class="info__detail">{{date}}</div>
       </div>
       <div class="info side-time">
         <div class="info__item">Time</div>
-        <div class="info__detail">11:00AM</div>
+        <div class="info__detail">{{time}}</div>
       </div>
       <div class="barcode">
         <div class="barcode__scan"></div>
-        <div class="barcode__id">001256733</div>
+        <div class="barcode__id">{{barCodeId}}</div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { format } from 'date-fns';
+
 export default {
-  name: 'Ticket',
+  name: "Ticket",
+  props: {
+    id: {
+      type: Number,
+      default: 0,
+      required: true,
+    },
+    depart: {
+        type: String,
+        required: true,
+    },
+    arrive: {
+        type: String,
+        required: true,
+    },
+    departs: {
+        type: String,
+        default: new Date().toISOString(),
+        required: true,
+    },
+    car: {
+        type: String,
+    },
+    seat: {
+        type: String,
+    },
+    passenger: {
+        type: String,
+    }
+  },
+  computed: {
+    barCodeId() {
+      return this.id.toString().padStart(9, "0");
+    },
+    date() {
+      return format(this.departs, 'D MMM YYYY')
+    },
+    time() {
+      return format(this.departs, 'hh:mmA');
+    },
+  },
+  filters: {
+    truncate: (value = '', maxLength = 10) => value.substr(0, maxLength),
+  }
 };
 </script>
 
